@@ -1,0 +1,25 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: gps-ingress
+  annotations:
+    kubernetes.io/ingress.class: "nginx"
+spec:
+  rules:
+  - host: example.local
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: gps-frontend-svc
+            port:
+              number: 80
+      - path: /api
+        pathType: Prefix
+        backend:
+          service:
+            name: gps-tracker-svc
+            port:
+              number: 5000

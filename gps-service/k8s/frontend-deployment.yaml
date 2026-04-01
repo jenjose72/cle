@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gps-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gps-frontend
+  template:
+    metadata:
+      labels:
+        app: gps-frontend
+    spec:
+      containers:
+      - name: gps-frontend
+        image: ghcr.io/<owner>/<repo>/gps-frontend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: REACT_APP_BACKEND_URL
+          value: "http://gps-tracker-svc:5000"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gps-frontend-svc
+spec:
+  selector:
+    app: gps-frontend
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+  type: LoadBalancer

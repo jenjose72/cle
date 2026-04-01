@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gps-tracker
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: gps-tracker
+  template:
+    metadata:
+      labels:
+        app: gps-tracker
+    spec:
+      containers:
+      - name: gps-tracker
+        image: ghcr.io/<owner>/<repo>/gps-tracker:latest
+        ports:
+        - containerPort: 5000
+        env:
+        - name: FLASK_ENV
+          value: "production"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: gps-tracker-svc
+spec:
+  selector:
+    app: gps-tracker
+  ports:
+  - protocol: TCP
+    port: 5000
+    targetPort: 5000
+  type: ClusterIP

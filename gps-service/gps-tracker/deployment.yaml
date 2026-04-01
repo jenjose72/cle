@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gps-deployment
+
+spec:
+  replicas: 1
+
+  selector:
+    matchLabels:
+      app: gps
+
+  template:
+    metadata:
+      labels:
+        app: gps
+
+    spec:
+      imagePullSecrets:
+        - name: dockerhub-secret
+
+      containers:
+        - name: gps-container
+          image: 2023bcs0017jenjosejeeson/gps-microservice:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 5000
