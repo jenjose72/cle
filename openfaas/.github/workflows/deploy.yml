@@ -1,0 +1,32 @@
+name: OpenFaaS CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Install faas-cli
+      run: curl -sSL https://cli.openfaas.com | sudo sh
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v3
+
+    - name: Login to Docker
+      run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u ${{ secrets.DOCKER_USERNAME }} --password-stdin
+
+    - name: Login to OpenFaaS
+      run: echo "${{ secrets.OPENFAAS_PASSWORD }}" | faas-cli login --username admin --password-stdin --gateway ${{ secrets.OPENFAAS_URL }}
+
+    - name: Terraform Init
+      run: terraform init
+
+    - name: Terraform Apply
+      run: terraform apply -auto-approve

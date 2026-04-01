@@ -1,0 +1,26 @@
+name: Deploy MongoDB with Terraform
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  terraform:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout Code
+      uses: actions/checkout@v3
+
+    - name: 🏗 Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+
+    - name: ⚙️ Setup Kubeconfig
+      run: |
+        mkdir -p $HOME/.kube
+        echo "${{ secrets.KUBECONFIG }}" > $HOME/.kube/config
+
+    - name: Terraform Init
+      run: terraform init
+
